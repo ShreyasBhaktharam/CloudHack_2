@@ -6,7 +6,7 @@ const {
     MONGO_PASSWORD,
     MONGO_HOSTNAME,
     MONGO_PORT,
-    MONGO_DB,
+    MONGO_DB
 } = process.env;
 
 const options = {

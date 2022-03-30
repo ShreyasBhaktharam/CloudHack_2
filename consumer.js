@@ -1,8 +1,11 @@
 const amqplib = require('amqplib');
+const MongoClient = require('mongodb').MongoClient;
 const amqpUrl = process.env.AMQP_URL || 'amqp://localhost:5673';
+//const url = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
+const url = `mongodb://shreyas:shreyas123@127.0.0.1:27017/cc_hack_2?authSource=admin`;
 
 async function processMessage(msg) {
-  console.log(msg.content.toString(), 'Call email API here');
+  console.log(msg.content.toString(), 'Calling ride-sharing service API here');
 }
 
 (async () => {
@@ -23,6 +26,18 @@ async function processMessage(msg) {
       console.log('processing messages');      
       await processMessage(msg);
       await channel.ack(msg);
+
+      MongoClient.connect(url, (err, db) => {
+        if(err)
+          throw err;
+        db.collection('cc_hack_2_collection').insertOne(msg, (err, result) => {
+          if(err)
+            throw err;
+          console.log('Record inserted')
+          db.close();
+        })
+      })
+
     }, 
     {
       noAck: false,

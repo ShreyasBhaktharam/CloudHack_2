@@ -11,6 +11,24 @@ services:
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
         - rabbitmq_nodejs
+
+  db:
+    image: mongo:4.1.8-xenial
+    container_name: db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+      - MONGO_USERNAME=$MONGO_USERNAME
+      - MONGO_PASSWORD=$MONGO_PASSWORD
+      - MONGO_HOSTNAME=$MONGO_HOSTNAME
+      - MONGO_PORT=$MONGO_PORT
+      - MONGO_DB=$MONGO_DB
+    volumes:  
+      - ./dbdata:/data/db   
+    networks:
+      - app-network 
   consumer:
     build:
       context: ./
@@ -23,13 +41,10 @@ services:
     environment:
       NODE_ENV: production
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
-      MONGO_USERNAME: $MONGO_USERNAME
-      MONGO_PASSWORD: $MONGO_PASSWORD
-      MONGO_HOSTNAME: db
-      MONGO_PORT: $MONGO_PORT
-      MONGO_DB: $MONGO_DB
     networks:
       - rabbitmq_nodejs
 networks:
   rabbitmq_nodejs:
+    driver: bridge
+  app-network:
     driver: bridge
