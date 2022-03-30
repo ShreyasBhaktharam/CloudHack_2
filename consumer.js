@@ -12,7 +12,7 @@ async function processMessage(msg) {
     const connection = await amqplib.connect(amqpUrl, "heartbeat=60");
     const channel = await connection.createChannel();
     channel.prefetch(10);
-    //const queue = 'user.sign_up_email';
+
     const queue = 'ride_match';
     process.once('SIGINT', async () => { 
       console.log('got sigint, closing connection');
@@ -27,6 +27,9 @@ async function processMessage(msg) {
       await processMessage(msg);
       await channel.ack(msg);
 
+      console.log("Message processed for the container");
+      console.log(process.env.CONSUMER_ID);
+      console.log(process.env.PRODUCER_ADDRESS);
       MongoClient.connect(url, (err, db) => {
         if(err)
           throw err;

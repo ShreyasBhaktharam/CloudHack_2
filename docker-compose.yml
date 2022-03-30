@@ -41,6 +41,8 @@ services:
     environment:
       NODE_ENV: production
       AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      CONSUMER_ID: $HOSTNAME
+      PRODUCER_ADDRESS: $IP_ADDRESS
     networks:
       - rabbitmq_nodejs
 networks:

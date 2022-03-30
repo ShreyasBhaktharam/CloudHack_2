@@ -16,7 +16,6 @@ const amqpUrl = process.env.AMQP_URL || 'amqp://localhost:5673';
     await channel.bindQueue(queue, exchange, routingKey);
     
     const msg = {'pickup': 'yoyo', 'destination': 'yoyoma', 'time':Math.floor(Math.random() * 100), 'cost': 150, 'seats':4};
-    //const msg = {'id': Math.floor(Math.random() * 1000), 'email': 'user@domail.com', name: 'firstname lastname'};
     await channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(msg)));
     console.log('Message published');
   } catch(e) {
